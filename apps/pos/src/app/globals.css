@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 97%;
+    --foreground: 220 20% 10%;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
+}
+
+/* Thermal Receipt & Label Print Media Styles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #thermal-receipt-print-area,
+  #thermal-receipt-print-area * {
+    visibility: visible;
+  }
+
+  #thermal-receipt-print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80mm !important;
+    max-width: 80mm !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-family: 'Courier New', Courier, monospace !important;
+    color: #000 !important;
+    background: #fff !important;
+  }
+
+  #thermal-label-print-area,
+  #thermal-label-print-area * {
+    visibility: visible;
+  }
+
+  #thermal-label-print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50mm !important;
+    height: 30mm !important;
+    margin: 0 !important;
+    padding: 2mm !important;
+    page-break-after: always;
+  }
+
+  @page {
+    margin: 0;
+    size: auto;
+  }
+}

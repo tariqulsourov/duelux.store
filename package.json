@@ -16,7 +16,8 @@
     "db:migrate": "npm run migrate --workspace=@duelux/db",
     "db:push": "npm run push --workspace=@duelux/db",
     "db:studio": "npm run studio --workspace=@duelux/db",
-    "dev:api": "npm run dev --workspace=@duelux/api"
+    "dev:api": "npm run dev --workspace=@duelux/api",
+    "dev:pos": "npm run dev --workspace=@duelux/pos"
   },
   "devDependencies": {
     "turbo": "^2.4.4",

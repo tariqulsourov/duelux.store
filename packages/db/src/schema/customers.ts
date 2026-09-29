@@ -4,8 +4,8 @@ import { sql } from 'drizzle-orm';
 export const customers = mysqlTable('customers', {
   id: varchar('id', { length: 36 }).primaryKey().default(sql`(UUID())`),
   phone: varchar('phone', { length: 30 }).notNull().unique(), // Fast lookup key for POS counter
-  firstName: varchar('100', { length: 100 }),
-  lastName: varchar('100', { length: 100 }),
+  firstName: varchar('first_name', { length: 100 }),
+  lastName: varchar('last_name', { length: 100 }),
   email: varchar('email', { length: 150 }),
   passwordHash: varchar('password_hash', { length: 255 }), // Nullable for in-store guest lookups
   loyaltyPoints: decimal('loyalty_points', { precision: 12, scale: 4 }).default('0.0000').notNull(),

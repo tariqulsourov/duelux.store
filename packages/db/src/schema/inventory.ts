@@ -24,7 +24,7 @@ export const inventoryLedger = mysqlTable('inventory_ledger', {
   resultingOnHand: decimal('resulting_on_hand', { precision: 12, scale: 4 }).notNull(),
   eventType: varchar('event_type', { length: 50 }).notNull(), // PURCHASE_RECEIPT, POS_SALE, ONLINE_SALE, etc.
   referenceType: varchar('reference_type', { length: 50 }),  // ORDER, PURCHASE_ORDER, TRANSFER
-  referenceId: varchar('100', { length: 100 }),              // Order ID, Shift ID, etc.
+  referenceId: varchar('reference_id', { length: 100 }),      // Order ID, Shift ID, etc.
   notes: text('notes'),
   createdByUserId: varchar('created_by_user_id', { length: 36 }).references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),

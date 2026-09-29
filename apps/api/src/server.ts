@@ -7,6 +7,7 @@ import { posRouter } from './routes/pos.routes.js';
 import { inventoryRouter } from './routes/inventory.routes.js';
 import { catalogRouter } from './routes/catalog.routes.js';
 import { outletsRouter } from './routes/outlets.routes.js';
+import { storefrontRouter } from './routes/storefront.routes.js';
 
 dotenv.config({ path: '../../.env' });
 dotenv.config();
@@ -49,6 +50,7 @@ app.use('/api/v1/pos', posRouter);
 app.use('/api/v1/inventory', inventoryRouter);
 app.use('/api/v1/catalog', catalogRouter);
 app.use('/api/v1/outlets', outletsRouter);
+app.use('/api/v1/storefront', storefrontRouter);
 
 // Global Error Handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

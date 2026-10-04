@@ -17,6 +17,7 @@ build/
 .next/
 out/
 coverage/
+*.tsbuildinfo
 
 # Drizzle & DB
 drizzle/meta/

@@ -219,7 +219,6 @@ export default function AdminProductsPage() {
   // Quick Category & Brand Modals
   const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
   const [newCatName, setNewCatName] = useState('');
-  const [newCatSlug, setNewCatSlug] = useState('');
   const [newCatDesc, setNewCatDesc] = useState('');
   const [newCatImg, setNewCatImg] = useState('');
   const [creatingCategory, setCreatingCategory] = useState(false);
@@ -227,15 +226,9 @@ export default function AdminProductsPage() {
 
   const [showAddBrandModal, setShowAddBrandModal] = useState(false);
   const [newBrandName, setNewBrandName] = useState('');
-  const [newBrandSlug, setNewBrandSlug] = useState('');
   const [newBrandLogo, setNewBrandLogo] = useState('');
   const [creatingBrand, setCreatingBrand] = useState(false);
   const [brandError, setBrandError] = useState('');
-
-  const handleCatNameChange = (val: string) => {
-    setNewCatName(val);
-    setNewCatSlug(val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''));
-  };
 
   const handleCreateCategory = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -246,12 +239,14 @@ export default function AdminProductsPage() {
     try {
       setCreatingCategory(true);
       setCatError('');
+      // Automatically generate URL slug from category name
+      const autoSlug = newCatName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
       const res = await fetch('http://localhost:4000/api/v1/catalog/categories', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: newCatName.trim(),
-          slug: newCatSlug.trim() || undefined,
+          slug: autoSlug || undefined,
           description: newCatDesc.trim() || undefined,
           imageUrl: newCatImg.trim() || undefined,
         }),
@@ -264,7 +259,6 @@ export default function AdminProductsPage() {
       setCategories((prev) => [...prev, data.data]);
       setCategoryId(data.data.id);
       setNewCatName('');
-      setNewCatSlug('');
       setNewCatDesc('');
       setNewCatImg('');
       setShowAddCategoryModal(false);
@@ -280,11 +274,6 @@ export default function AdminProductsPage() {
     }
   };
 
-  const handleBrandNameChange = (val: string) => {
-    setNewBrandName(val);
-    setNewBrandSlug(val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''));
-  };
-
   const handleCreateBrand = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newBrandName.trim()) {
@@ -294,12 +283,14 @@ export default function AdminProductsPage() {
     try {
       setCreatingBrand(true);
       setBrandError('');
+      // Automatically generate URL slug from brand name
+      const autoSlug = newBrandName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
       const res = await fetch('http://localhost:4000/api/v1/catalog/brands', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: newBrandName.trim(),
-          slug: newBrandSlug.trim() || undefined,
+          slug: autoSlug || undefined,
           logoUrl: newBrandLogo.trim() || undefined,
         }),
       });
@@ -311,7 +302,6 @@ export default function AdminProductsPage() {
       setBrands((prev) => [...prev, data.data]);
       setBrandId(data.data.id);
       setNewBrandName('');
-      setNewBrandSlug('');
       setNewBrandLogo('');
       setShowAddBrandModal(false);
       setNotification({
@@ -1867,22 +1857,17 @@ export default function AdminProductsPage() {
                   autoFocus
                   placeholder="e.g. Polo Shirts, Festive Panjabi"
                   value={newCatName}
-                  onChange={(e) => handleCatNameChange(e.target.value)}
+                  onChange={(e) => setNewCatName(e.target.value)}
                   className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-500"
                 />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  {t('slug_field')}
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. polo-shirts"
-                  value={newCatSlug}
-                  onChange={(e) => setNewCatSlug(e.target.value)}
-                  className="w-full px-3 py-2 font-mono bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-500"
-                />
+                {newCatName.trim() && (
+                  <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400 font-mono flex items-center gap-1.5">
+                    <span className="text-slate-400">⚡ Auto URL Identifier:</span>
+                    <span className="text-brand-600 dark:text-brand-400 font-semibold bg-brand-50 dark:bg-brand-950/60 px-1.5 py-0.5 rounded border border-brand-200 dark:border-brand-800">
+                      /{newCatName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'auto'}
+                    </span>
+                  </p>
+                )}
               </div>
 
               <div>
@@ -1983,22 +1968,17 @@ export default function AdminProductsPage() {
                   autoFocus
                   placeholder="e.g. Duelux Casuals, Atelier Bengal"
                   value={newBrandName}
-                  onChange={(e) => handleBrandNameChange(e.target.value)}
+                  onChange={(e) => setNewBrandName(e.target.value)}
                   className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-500"
                 />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  {t('slug_field')}
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. duelux-casuals"
-                  value={newBrandSlug}
-                  onChange={(e) => setNewBrandSlug(e.target.value)}
-                  className="w-full px-3 py-2 font-mono bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-500"
-                />
+                {newBrandName.trim() && (
+                  <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400 font-mono flex items-center gap-1.5">
+                    <span className="text-slate-400">⚡ Auto URL Identifier:</span>
+                    <span className="text-brand-600 dark:text-brand-400 font-semibold bg-brand-50 dark:bg-brand-950/60 px-1.5 py-0.5 rounded border border-brand-200 dark:border-brand-800">
+                      /{newBrandName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'auto'}
+                    </span>
+                  </p>
+                )}
               </div>
 
               <div>

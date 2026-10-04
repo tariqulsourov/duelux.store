@@ -76,8 +76,10 @@ catalogRouter.post('/brands', async (req: Request, res: Response) => {
  */
 catalogRouter.get('/products', async (req: Request, res: Response) => {
   try {
+    const includeInactive = req.query.includeInactive === 'true' || req.query.all === 'true';
+
     const allProducts = await db.query.products.findMany({
-      where: eq(products.isActive, true),
+      where: includeInactive ? undefined : eq(products.isActive, true),
       with: {
         brand: true,
         category: true,
@@ -97,21 +99,61 @@ catalogRouter.get('/products', async (req: Request, res: Response) => {
 });
 
 /**
- * Create Product with Variants and Barcodes
+ * Create Product with Extended Attributes, Variants, and Barcodes
  * POST /api/v1/catalog/products
  */
 catalogRouter.post('/products', async (req: Request, res: Response) => {
   try {
-    const { title, slug, description, brandId, categoryId, taxRatePercent, variants, outletId } = req.body;
+    const {
+      title,
+      slug,
+      shortDescription,
+      description,
+      brandId,
+      categoryId,
+      tags,
+      weightVolume,
+      rating,
+      reviewsCount,
+      featuredReview,
+      madeInRegion,
+      imageUrl,
+      galleryImages,
+      publishStatus = 'PUBLISHED',
+      taxRatePercent,
+      variants,
+      outletId,
+    } = req.body;
+
+    const isActive = publishStatus === 'PUBLISHED';
 
     const result = await db.transaction(async (tx) => {
-      // 1. Insert product (tax rate defaults to 0.00 per policy)
+      // 1. Insert product with all rich attributes
       await tx.insert(products).values({
         title,
         slug,
-        description,
+        shortDescription: shortDescription || null,
+        description: description || null,
         brandId: brandId || null,
         categoryId: categoryId || null,
+        tags: Array.isArray(tags)
+          ? tags
+          : typeof tags === 'string' && tags.trim()
+          ? tags.split(',').map((t: string) => t.trim()).filter(Boolean)
+          : null,
+        weightVolume: weightVolume || null,
+        rating: rating ? String(rating) : '5.00',
+        reviewsCount: reviewsCount ? String(reviewsCount) : '0',
+        featuredReview: featuredReview || null,
+        madeInRegion: madeInRegion || 'Bangladesh',
+        imageUrl: imageUrl || null,
+        galleryImages: Array.isArray(galleryImages)
+          ? galleryImages
+          : typeof galleryImages === 'string' && galleryImages.trim()
+          ? [galleryImages.trim()]
+          : [],
+        publishStatus: publishStatus || 'PUBLISHED',
+        isActive,
         taxRatePercent: taxRatePercent ? String(taxRatePercent) : '0.00',
         isTaxExempt: true,
       });
@@ -135,6 +177,7 @@ catalogRouter.post('/products', async (req: Request, res: Response) => {
             compareAtPrice: v.compareAtPrice ? MoneyUtil.toDbDecimal(v.compareAtPrice) : null,
             weightGrams: v.weightGrams ? String(v.weightGrams) : '0.00',
             attributesJson: v.attributesJson || {},
+            imageUrl: v.imageUrl || imageUrl || null,
           });
 
           const [createdVariant] = await tx

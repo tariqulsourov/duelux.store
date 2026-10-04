@@ -222,154 +222,154 @@ export default function AdminDashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Link
           href="/admin/products"
-          className="p-5 rounded-2xl bg-slate-950/40 border border-slate-800 hover:border-brand-500/50 hover:bg-slate-900/60 transition group flex items-start gap-4"
+          className="p-5 rounded-2xl bg-white dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 hover:border-brand-500/50 hover:bg-slate-50 dark:hover:bg-slate-900/60 shadow-sm transition group flex items-start gap-4"
         >
-          <div className="w-10 h-10 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
             <Package className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-white group-hover:text-brand-300 transition">
-              Create New Products & Variants
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-300 transition">
+              {t('card_catalog_title')}
             </h3>
-            <p className="text-xs text-slate-400 mt-1">
-              Add products with 1-click automatic EAN-13 barcodes, SKU generation, and initial stock allocation.
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+              {t('card_catalog_desc')}
             </p>
           </div>
         </Link>
 
         <Link
           href="/admin/inventory"
-          className="p-5 rounded-2xl bg-slate-950/40 border border-slate-800 hover:border-amber-500/50 hover:bg-slate-900/60 transition group flex items-start gap-4"
+          className="p-5 rounded-2xl bg-white dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 hover:border-amber-500/50 hover:bg-slate-50 dark:hover:bg-slate-900/60 shadow-sm transition group flex items-start gap-4"
         >
-          <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
             <Boxes className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-white group-hover:text-amber-300 transition">
-              Receive Goods (GRN) & Stock Adjustments
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-300 transition">
+              {t('card_grn_title')}
             </h3>
-            <p className="text-xs text-slate-400 mt-1">
-              Receive purchase shipments into Dhanmondi Flagship or Central Tejgaon Warehouse atomically.
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+              {t('card_grn_desc')}
             </p>
           </div>
         </Link>
 
         <Link
           href="/admin/ledger"
-          className="p-5 rounded-2xl bg-slate-950/40 border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-900/60 transition group flex items-start gap-4"
+          className="p-5 rounded-2xl bg-white dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 hover:bg-slate-50 dark:hover:bg-slate-900/60 shadow-sm transition group flex items-start gap-4"
         >
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
             <Clock className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-white group-hover:text-emerald-300 transition">
-              View Audit Stock Ledger
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-300 transition">
+              {t('card_ledger_title')}
             </h3>
-            <p className="text-xs text-slate-400 mt-1">
-              Inspect immutable audit trail of every sale, return, adjustment, and receipt in the company.
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+              {t('card_ledger_desc')}
             </p>
           </div>
         </Link>
       </div>
 
       {/* Recent Orders Section */}
-      <div className="bg-slate-950/70 rounded-2xl border border-slate-800 shadow-xl overflow-hidden">
-        <div className="p-5 border-b border-slate-800 flex items-center justify-between">
+      <div className="bg-white dark:bg-slate-950/70 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-xl overflow-hidden transition-colors">
+        <div className="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
           <div>
-            <h2 className="text-base font-bold text-white">
-              Recent Multi-Channel Orders
+            <h2 className="text-base font-bold text-slate-900 dark:text-white">
+              {t('recent_orders_title')}
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Live orders processed across Physical POS and Online Web Storefront
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              {t('recent_orders_desc')}
             </p>
           </div>
 
           <Link
             href="/admin/orders"
-            className="text-xs font-semibold text-brand-400 hover:text-brand-300 flex items-center gap-1.5 transition"
+            className="text-xs font-semibold text-brand-600 hover:text-brand-500 dark:text-brand-400 dark:hover:text-brand-300 flex items-center gap-1.5 transition"
           >
-            <span>View All Orders</span>
+            <span>{t('view_all_orders')}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-slate-400 text-sm">
-            <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-brand-400" />
-            Loading orders from MySQL...
+          <div className="p-12 text-center text-slate-500 dark:text-slate-400 text-sm">
+            <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-brand-600 dark:text-brand-400" />
+            {t('loading')}
           </div>
         ) : orders.length === 0 ? (
-          <div className="p-12 text-center text-slate-400 text-sm">
+          <div className="p-12 text-center text-slate-500 dark:text-slate-400 text-sm">
             No orders processed yet.
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-slate-800 bg-slate-900/60 text-slate-400 font-semibold uppercase tracking-wider">
-                  <th className="py-3.5 px-4">Order #</th>
-                  <th className="py-3.5 px-4">Channel</th>
-                  <th className="py-3.5 px-4">Customer</th>
-                  <th className="py-3.5 px-4">Items</th>
-                  <th className="py-3.5 px-4 text-right">Total (৳)</th>
-                  <th className="py-3.5 px-4">Payment</th>
-                  <th className="py-3.5 px-4">Date</th>
+                <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-slate-700 dark:text-slate-400 font-bold uppercase tracking-wider">
+                  <th className="py-3.5 px-4">{t('th_order_no')}</th>
+                  <th className="py-3.5 px-4">{t('th_channel_outlet')}</th>
+                  <th className="py-3.5 px-4">{t('th_customer')}</th>
+                  <th className="py-3.5 px-4">{t('th_items_summary')}</th>
+                  <th className="py-3.5 px-4 text-right">{t('th_selling_price')}</th>
+                  <th className="py-3.5 px-4">{t('th_payment_method')}</th>
+                  <th className="py-3.5 px-4">{t('date')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 text-slate-200">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-slate-800 dark:text-slate-200">
                 {orders.slice(0, 10).map((order) => {
                   const isPos = order.channel === 'POS_IN_STORE';
                   return (
-                    <tr key={order.id} className="hover:bg-slate-900/50 transition">
-                      <td className="py-3.5 px-4 font-mono font-bold text-white">
+                    <tr key={order.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-900/50 transition">
+                      <td className="py-3.5 px-4 font-mono font-bold text-slate-900 dark:text-white">
                         {order.orderNumber}
                       </td>
                       <td className="py-3.5 px-4">
                         <span
                           className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold ${
                             isPos
-                              ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                              : 'bg-brand-500/10 text-brand-400 border border-brand-500/20'
+                              ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20'
+                              : 'bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-400 border border-brand-200 dark:border-brand-500/20'
                           }`}
                         >
                           {isPos ? (
                             <>
                               <Store className="w-3 h-3" />
-                              POS In-Store
+                              {t('channel_pos')}
                             </>
                           ) : (
                             <>
                               <Globe className="w-3 h-3" />
-                              Web Storefront
+                              {t('channel_web')}
                             </>
                           )}
                         </span>
                       </td>
                       <td className="py-3.5 px-4">
-                        <div className="font-medium text-white">
-                          {order.customer?.fullName || 'Walk-in Cash Customer'}
+                        <div className="font-semibold text-slate-900 dark:text-white">
+                          {order.customer?.fullName || t('walk_in_customer')}
                         </div>
                         {order.customer?.phone && (
-                          <div className="text-[10px] text-slate-400">
+                          <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
                             {order.customer.phone}
                           </div>
                         )}
                       </td>
                       <td className="py-3.5 px-4">
-                        <span className="text-slate-300 font-medium">
-                          {order.items?.length || 0} item(s)
+                        <span className="text-slate-700 dark:text-slate-300 font-medium">
+                          {order.items?.length || 0} {t('line_items')}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 text-right font-bold text-white font-mono">
+                      <td className="py-3.5 px-4 text-right font-bold text-slate-900 dark:text-white font-mono">
                         ৳{Number(order.grandTotal).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </td>
                       <td className="py-3.5 px-4">
-                        <span className="inline-flex items-center gap-1 text-emerald-400 font-semibold text-[11px]">
+                        <span className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-semibold text-[11px]">
                           <CheckCircle2 className="w-3.5 h-3.5" />
                           {order.paymentStatus}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 text-slate-400 text-[11px]">
+                      <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400 text-[11px]">
                         {new Date(order.createdAt).toLocaleString('en-GB', {
                           day: '2-digit',
                           month: 'short',

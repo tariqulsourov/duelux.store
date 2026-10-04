@@ -6,20 +6,16 @@ import {
   Boxes,
   PlusCircle,
   Search,
-  Filter,
   RefreshCw,
   AlertTriangle,
   CheckCircle,
   AlertCircle,
-  ArrowRight,
-  TrendingUp,
   SlidersHorizontal,
   X,
   Store,
   Warehouse,
-  FileText,
-  RotateCcw,
 } from 'lucide-react';
+import { useLanguage } from '../../../context/LanguageContext';
 
 interface InventoryItem {
   level: {
@@ -67,6 +63,8 @@ export default function AdminInventoryPage() {
   const [selectedOutletId, setSelectedOutletId] = useState<string>('all');
   const [filterStockStatus, setFilterStockStatus] = useState<'all' | 'low' | 'out'>('all');
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  const { t } = useLanguage();
 
   // Modal states
   const [isReceiveModalOpen, setIsReceiveModalOpen] = useState(false);
@@ -227,7 +225,6 @@ export default function AdminInventoryPage() {
   };
 
   const filteredItems = items.filter((item) => {
-    // Outlet filter
     if (selectedOutletId !== 'all' && item.outlet.id !== selectedOutletId) {
       return false;
     }
@@ -235,11 +232,9 @@ export default function AdminInventoryPage() {
     const onHand = Number(item.level.onHandQty);
     const buffer = Number(item.level.safetyStockBuffer);
 
-    // Stock status filter
     if (filterStockStatus === 'low' && onHand > buffer) return false;
     if (filterStockStatus === 'out' && onHand > 0) return false;
 
-    // Search query
     const q = searchTerm.toLowerCase();
     const matchesProduct = item.product.title.toLowerCase().includes(q);
     const matchesVariant = item.variant.title.toLowerCase().includes(q);
@@ -256,35 +251,35 @@ export default function AdminInventoryPage() {
         <div
           className={`p-4 rounded-xl flex items-center justify-between shadow-lg border ${
             notification.type === 'success'
-              ? 'bg-emerald-950/80 border-emerald-800 text-emerald-200'
-              : 'bg-rose-950/80 border-rose-800 text-rose-200'
+              ? 'bg-emerald-50 dark:bg-emerald-950/80 border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200'
+              : 'bg-rose-50 dark:bg-rose-950/80 border-rose-300 dark:border-rose-800 text-rose-800 dark:text-rose-200'
           }`}
         >
           <div className="flex items-center gap-3">
             {notification.type === 'success' ? (
-              <CheckCircle className="w-5 h-5 text-emerald-400" />
+              <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             ) : (
-              <AlertCircle className="w-5 h-5 text-rose-400" />
+              <AlertCircle className="w-5 h-5 text-rose-600 dark:text-rose-400" />
             )}
             <span className="text-sm font-medium">{notification.message}</span>
           </div>
           <button
             onClick={() => setNotification(null)}
-            className="text-slate-400 hover:text-white text-xs font-bold"
+            className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white text-xs font-bold"
           >
-            Dismiss
+            {t('cancel')}
           </button>
         </div>
       )}
 
       {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-950/60 p-6 rounded-2xl border border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-950/70 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-md transition-colors">
         <div>
-          <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
-            <Boxes className="w-6 h-6 text-amber-400" />
-            Stock & Inventory Control
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+            <Boxes className="w-6 h-6 text-amber-500 dark:text-amber-400" />
+            {t('admin_inventory')}
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
             Real-time atomic stock balances with live Goods Received Notes (GRN) and audit adjustments.
           </p>
         </div>
@@ -293,32 +288,32 @@ export default function AdminInventoryPage() {
           <button
             onClick={loadData}
             disabled={loading}
-            className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
-            title="Refresh List"
+            className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition"
+            title={t('refresh')}
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
 
           <button
             onClick={() => openAdjustModal()}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition"
+            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-semibold transition"
           >
-            <SlidersHorizontal className="w-4 h-4 text-slate-400" />
-            <span>Adjust / Correct</span>
+            <SlidersHorizontal className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+            <span>{t('stock_adjustment')}</span>
           </button>
 
           <button
             onClick={() => openReceiveModal()}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold shadow-lg shadow-brand-600/30 transition"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold shadow-md shadow-brand-600/30 transition"
           >
             <PlusCircle className="w-4 h-4" />
-            <span>Receive Goods (GRN)</span>
+            <span>{t('receive_goods_grn')}</span>
           </button>
         </div>
       </div>
 
       {/* Outlet Selector Tabs & Search */}
-      <div className="bg-slate-950/40 p-4 rounded-xl border border-slate-800/80 space-y-4">
+      <div className="bg-white dark:bg-slate-950/40 p-4 rounded-xl border border-slate-200 dark:border-slate-800/80 shadow-sm space-y-4 transition-colors">
         {/* Outlet Switcher */}
         <div className="flex flex-wrap items-center gap-2">
           <button
@@ -326,10 +321,10 @@ export default function AdminInventoryPage() {
             className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
               selectedOutletId === 'all'
                 ? 'bg-brand-600 text-white shadow-sm'
-                : 'bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white border border-slate-800'
+                : 'bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
             }`}
           >
-            <span>All Locations</span>
+            <span>{t('all_locations')}</span>
           </button>
 
           {outlets.map((o) => {
@@ -344,10 +339,10 @@ export default function AdminInventoryPage() {
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-2 ${
                   isSelected
                     ? 'bg-brand-600 text-white shadow-sm'
-                    : 'bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white border border-slate-800'
+                    : 'bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isSelected ? 'text-white' : 'text-slate-400'}`} />
+                <Icon className={`w-3.5 h-3.5 ${isSelected ? 'text-white' : 'text-slate-500 dark:text-slate-400'}`} />
                 <span>{o.name}</span>
                 <span className="text-[10px] font-mono opacity-60">({o.code})</span>
               </button>
@@ -356,15 +351,15 @@ export default function AdminInventoryPage() {
         </div>
 
         {/* Filter bar */}
-        <div className="flex flex-col sm:flex-row items-center gap-3 pt-2 border-t border-slate-800/60">
+        <div className="flex flex-col sm:flex-row items-center gap-3 pt-2 border-t border-slate-200 dark:border-slate-800/60">
           <div className="relative flex-1 w-full">
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search by title, SKU, or barcode..."
+              placeholder={t('catalog_search_placeholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-slate-900 border border-slate-700/80 rounded-lg text-xs text-white placeholder-slate-400 focus:outline-none focus:border-brand-500"
+              className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700/80 rounded-lg text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors"
             />
           </div>
 
@@ -373,64 +368,64 @@ export default function AdminInventoryPage() {
               onClick={() => setFilterStockStatus('all')}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                 filterStockStatus === 'all'
-                  ? 'bg-slate-800 text-white'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white font-bold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              All Stock
+              {t('filter_all')}
             </button>
             <button
               onClick={() => setFilterStockStatus('low')}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
                 filterStockStatus === 'low'
-                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-500/30 font-bold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              <AlertTriangle className="w-3 h-3 text-amber-400" />
-              Low Stock Alert
+              <AlertTriangle className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+              {t('low_stock')}
             </button>
             <button
               onClick={() => setFilterStockStatus('out')}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                 filterStockStatus === 'out'
-                  ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-rose-100 dark:bg-rose-500/20 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-500/30 font-bold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              Out of Stock
+              {t('out_of_stock')}
             </button>
           </div>
         </div>
       </div>
 
       {/* Stock Table */}
-      <div className="bg-slate-950/70 rounded-2xl border border-slate-800 shadow-xl overflow-hidden">
+      <div className="bg-white dark:bg-slate-950/70 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-xl overflow-hidden transition-colors">
         {loading ? (
-          <div className="p-16 text-center text-slate-400 text-sm">
-            <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-brand-400" />
-            Loading live stock balances...
+          <div className="p-16 text-center text-slate-500 dark:text-slate-400 text-sm">
+            <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-brand-600 dark:text-brand-400" />
+            {t('loading')}
           </div>
         ) : filteredItems.length === 0 ? (
-          <div className="p-16 text-center text-slate-400 text-sm">
-            No inventory records found. Click "Receive Goods (GRN)" to stock an item!
+          <div className="p-16 text-center text-slate-500 dark:text-slate-400 text-sm">
+            No inventory records found. Click "{t('receive_goods_grn')}" to stock an item!
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-slate-800 bg-slate-900/60 text-slate-400 font-semibold uppercase tracking-wider">
-                  <th className="py-3.5 px-4">Item & Variant</th>
-                  <th className="py-3.5 px-4">Location</th>
-                  <th className="py-3.5 px-4 text-center">On-Hand</th>
-                  <th className="py-3.5 px-4 text-center">Reserved</th>
-                  <th className="py-3.5 px-4 text-center">Buffer</th>
-                  <th className="py-3.5 px-4 text-center">Net Available</th>
-                  <th className="py-3.5 px-4">Status</th>
-                  <th className="py-3.5 px-4 text-right">Quick Action</th>
+                <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-slate-700 dark:text-slate-400 font-bold uppercase tracking-wider">
+                  <th className="py-3.5 px-4">{t('th_product')}</th>
+                  <th className="py-3.5 px-4">{t('all_locations')}</th>
+                  <th className="py-3.5 px-4 text-center">{t('on_hand_qty')}</th>
+                  <th className="py-3.5 px-4 text-center">{t('reserved_qty')}</th>
+                  <th className="py-3.5 px-4 text-center">{t('buffer_qty')}</th>
+                  <th className="py-3.5 px-4 text-center">{t('available_qty')}</th>
+                  <th className="py-3.5 px-4">{t('status')}</th>
+                  <th className="py-3.5 px-4 text-right">{t('th_actions')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 text-slate-200">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-slate-800 dark:text-slate-200">
                 {filteredItems.map((item) => {
                   const onHand = Number(item.level.onHandQty);
                   const reserved = Number(item.level.reservedQty);
@@ -440,18 +435,18 @@ export default function AdminInventoryPage() {
                   const isDepleted = onHand <= 0;
 
                   return (
-                    <tr key={item.level.id} className="hover:bg-slate-900/50 transition">
-                      {/* Product & Variant */}
+                    <tr key={item.level.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-900/50 transition">
+                      {/* Product & Variant (Constants from input) */}
                       <td className="py-3.5 px-4">
-                        <div className="font-bold text-white text-xs">{item.product.title}</div>
+                        <div className="font-bold text-slate-900 dark:text-white text-xs">{item.product.title}</div>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-[10px] bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded font-semibold">
+                          <span className="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-300 px-1.5 py-0.5 rounded font-semibold border border-slate-200 dark:border-slate-700">
                             {item.variant.title}
                           </span>
-                          <span className="text-[10px] font-mono text-slate-400">
+                          <span className="text-[10px] font-mono text-slate-600 dark:text-slate-400">
                             {item.variant.sku}
                           </span>
-                          <span className="text-[10px] font-mono text-indigo-400">
+                          <span className="text-[10px] font-mono text-indigo-700 dark:text-indigo-400">
                             {item.variant.barcode}
                           </span>
                         </div>
@@ -459,11 +454,11 @@ export default function AdminInventoryPage() {
 
                       {/* Outlet */}
                       <td className="py-3.5 px-4">
-                        <div className="flex items-center gap-1.5 text-slate-300 font-medium">
+                        <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 font-medium">
                           {item.outlet.isWarehouse ? (
-                            <Warehouse className="w-3.5 h-3.5 text-indigo-400" />
+                            <Warehouse className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                           ) : (
-                            <Store className="w-3.5 h-3.5 text-emerald-400" />
+                            <Store className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                           )}
                           <span>{item.outlet.name}</span>
                         </div>
@@ -473,12 +468,12 @@ export default function AdminInventoryPage() {
                       </td>
 
                       {/* On Hand */}
-                      <td className="py-3.5 px-4 text-center font-mono font-bold text-white text-sm">
+                      <td className="py-3.5 px-4 text-center font-mono font-bold text-slate-900 dark:text-white text-sm">
                         {onHand.toFixed(0)}
                       </td>
 
                       {/* Reserved */}
-                      <td className="py-3.5 px-4 text-center font-mono text-slate-400">
+                      <td className="py-3.5 px-4 text-center font-mono text-slate-600 dark:text-slate-400">
                         {reserved.toFixed(0)}
                       </td>
 
@@ -488,24 +483,24 @@ export default function AdminInventoryPage() {
                       </td>
 
                       {/* Net Available */}
-                      <td className="py-3.5 px-4 text-center font-mono font-bold text-brand-400 text-sm">
+                      <td className="py-3.5 px-4 text-center font-mono font-bold text-brand-700 dark:text-brand-400 text-sm">
                         {netAvailable.toFixed(0)}
                       </td>
 
                       {/* Status */}
                       <td className="py-3.5 px-4">
                         {isDepleted ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">
-                            Out of Stock
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20">
+                            {t('out_of_stock')}
                           </span>
                         ) : isLow ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20">
                             <AlertTriangle className="w-3 h-3" />
-                            Low Stock
+                            {t('low_stock')}
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                            Healthy
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
+                            {t('healthy_stock')}
                           </span>
                         )}
                       </td>
@@ -514,15 +509,15 @@ export default function AdminInventoryPage() {
                       <td className="py-3.5 px-4 text-right space-x-2">
                         <button
                           onClick={() => openReceiveModal(item)}
-                          className="px-2.5 py-1 rounded bg-brand-600/20 hover:bg-brand-600/30 text-brand-300 border border-brand-500/30 text-[11px] font-semibold transition"
+                          className="px-2.5 py-1 rounded bg-brand-50 hover:bg-brand-100 dark:bg-brand-600/20 dark:hover:bg-brand-600/30 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-500/30 text-[11px] font-semibold transition"
                         >
-                          + Receive
+                          + {t('receive_goods_grn')}
                         </button>
                         <button
                           onClick={() => openAdjustModal(item)}
-                          className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] font-semibold transition"
+                          className="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 text-[11px] font-semibold transition"
                         >
-                          Adjust
+                          {t('stock_adjustment')}
                         </button>
                       </td>
                     </tr>
@@ -536,21 +531,21 @@ export default function AdminInventoryPage() {
 
       {/* Receive Stock (Goods Received Note / GRN) Modal */}
       {isReceiveModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-950 border border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col">
-            <div className="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+        <div className="fixed inset-0 z-50 bg-black/60 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col transition-colors">
+            <div className="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/60">
               <div>
-                <h2 className="text-base font-black text-white flex items-center gap-2">
-                  <PlusCircle className="w-5 h-5 text-brand-400" />
-                  Receive Goods / Inbound Stock (GRN)
+                <h2 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+                  <PlusCircle className="w-5 h-5 text-brand-600 dark:text-brand-400" />
+                  {t('receive_goods_grn')}
                 </h2>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   Record new delivery arrivals into the atomic inventory ledger.
                 </p>
               </div>
               <button
                 onClick={() => setIsReceiveModalOpen(false)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition"
+                className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -558,14 +553,14 @@ export default function AdminInventoryPage() {
 
             <form onSubmit={handleReceiveSubmit} className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Product Variant *
                 </label>
                 <select
                   value={receiveVariantId}
                   onChange={(e) => setReceiveVariantId(e.target.value)}
                   required
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-brand-500"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-500"
                 >
                   {items.map((i) => (
                     <option key={i.variant.id} value={i.variant.id}>
@@ -576,14 +571,14 @@ export default function AdminInventoryPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Receiving Outlet / Warehouse *
                 </label>
                 <select
                   value={receiveOutletId}
                   onChange={(e) => setReceiveOutletId(e.target.value)}
                   required
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-brand-500"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-500"
                 >
                   {outlets.map((o) => (
                     <option key={o.id} value={o.id}>
@@ -595,7 +590,7 @@ export default function AdminInventoryPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                     Received Quantity (Units) *
                   </label>
                   <input
@@ -606,44 +601,44 @@ export default function AdminInventoryPage() {
                     value={receiveQty}
                     onChange={(e) => setReceiveQty(e.target.value)}
                     required
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white font-mono"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
-                    PO / GRN Reference #
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    {t('po_reference')}
                   </label>
                   <input
                     type="text"
                     placeholder="PO-2026-001"
                     value={receivePoRef}
                     onChange={(e) => setReceivePoRef(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white font-mono"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-mono"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Supplier / Inspection Notes
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  {t('notes_field')}
                 </label>
                 <input
                   type="text"
                   placeholder="e.g. Factory shipment batch verified"
                   value={receiveNotes}
                   onChange={(e) => setReceiveNotes(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white"
                 />
               </div>
 
-              <div className="pt-4 border-t border-slate-800 flex items-center justify-end gap-3">
+              <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setIsReceiveModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition"
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold transition"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
                 <button
                   type="submit"
@@ -653,12 +648,12 @@ export default function AdminInventoryPage() {
                   {submitting ? (
                     <>
                       <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      <span>Recording GRN...</span>
+                      <span>{t('loading')}</span>
                     </>
                   ) : (
                     <>
                       <CheckCircle className="w-3.5 h-3.5" />
-                      <span>Post Goods Receipt</span>
+                      <span>{t('receive_goods_grn')}</span>
                     </>
                   )}
                 </button>
@@ -670,21 +665,21 @@ export default function AdminInventoryPage() {
 
       {/* Stock Adjustment Modal */}
       {isAdjustModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-950 border border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col">
-            <div className="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+        <div className="fixed inset-0 z-50 bg-black/60 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col transition-colors">
+            <div className="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/60">
               <div>
-                <h2 className="text-base font-black text-white flex items-center gap-2">
-                  <SlidersHorizontal className="w-5 h-5 text-amber-400" />
-                  Stock Audit Correction / Adjustment
+                <h2 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+                  <SlidersHorizontal className="w-5 h-5 text-amber-500 dark:text-amber-400" />
+                  {t('stock_adjustment')}
                 </h2>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   Record cycle count variances, damage write-offs, or audit changes.
                 </p>
               </div>
               <button
                 onClick={() => setIsAdjustModalOpen(false)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition"
+                className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -692,14 +687,14 @@ export default function AdminInventoryPage() {
 
             <form onSubmit={handleAdjustSubmit} className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Product Variant *
                 </label>
                 <select
                   value={adjustVariantId}
                   onChange={(e) => setAdjustVariantId(e.target.value)}
                   required
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-brand-500"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-500"
                 >
                   {items.map((i) => (
                     <option key={i.variant.id} value={i.variant.id}>
@@ -710,14 +705,14 @@ export default function AdminInventoryPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Target Outlet *
                 </label>
                 <select
                   value={adjustOutletId}
                   onChange={(e) => setAdjustOutletId(e.target.value)}
                   required
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-brand-500"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-500"
                 >
                   {outlets.map((o) => (
                     <option key={o.id} value={o.id}>
@@ -729,7 +724,7 @@ export default function AdminInventoryPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                     Change Qty (+ to add, - to deduct) *
                   </label>
                   <input
@@ -739,18 +734,18 @@ export default function AdminInventoryPage() {
                     value={adjustQty}
                     onChange={(e) => setAdjustQty(e.target.value)}
                     required
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white font-mono"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                     Adjustment Reason *
                   </label>
                   <select
                     value={adjustType}
                     onChange={(e) => setAdjustType(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white"
                   >
                     <option value="CYCLE_COUNT_ADJUST">Cycle Count Correction</option>
                     <option value="DAMAGED_WRITE_OFF">Damaged Stock Write-off</option>
@@ -761,25 +756,25 @@ export default function AdminInventoryPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Audit Notes / Reason Explanation
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  {t('notes_field')}
                 </label>
                 <input
                   type="text"
                   placeholder="e.g. Found 2 extra units during monthly rack verification"
                   value={adjustNotes}
                   onChange={(e) => setAdjustNotes(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white"
                 />
               </div>
 
-              <div className="pt-4 border-t border-slate-800 flex items-center justify-end gap-3">
+              <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setIsAdjustModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition"
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold transition"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
                 <button
                   type="submit"
@@ -789,12 +784,12 @@ export default function AdminInventoryPage() {
                   {submitting ? (
                     <>
                       <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      <span>Adjusting Stock...</span>
+                      <span>{t('loading')}</span>
                     </>
                   ) : (
                     <>
                       <CheckCircle className="w-3.5 h-3.5" />
-                      <span>Execute Adjustment</span>
+                      <span>{t('stock_adjustment')}</span>
                     </>
                   )}
                 </button>

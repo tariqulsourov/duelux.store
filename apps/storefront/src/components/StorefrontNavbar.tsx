@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ShoppingBag, ArrowUpRight, Search, ShieldCheck } from 'lucide-react';
+import { ShoppingBag, ArrowUpRight, Search, ShieldCheck, LayoutDashboard } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
 export function StorefrontNavbar() {
@@ -48,7 +48,16 @@ export function StorefrontNavbar() {
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          {/* Direct Switch to Admin Dashboard */}
+          <Link
+            href="/admin"
+            className="hidden sm:flex items-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-3.5 py-1.5 text-xs font-bold text-gray-700 hover:border-brand-500 hover:bg-white hover:text-brand-700 transition"
+          >
+            <LayoutDashboard className="h-3.5 w-3.5 text-brand-600" />
+            <span>Admin Hub</span>
+          </Link>
+
           {/* Direct Switch to In-House POS Terminal */}
           <a
             href="http://localhost:3001"
@@ -56,9 +65,10 @@ export function StorefrontNavbar() {
             rel="noopener noreferrer"
             className="hidden sm:flex items-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-3.5 py-1.5 text-xs font-bold text-gray-700 hover:border-brand-500 hover:bg-white hover:text-brand-700 transition"
           >
-            <span>Launch POS Terminal</span>
+            <span>POS Terminal</span>
             <ArrowUpRight className="h-3.5 w-3.5" />
           </a>
+
 
           {/* Cart Trigger */}
           <button

@@ -59,12 +59,40 @@ export const ordersRelations = relations(orders, ({ one, many }) => ({
   items: many(orderItems),
   payments: many(orderPayments),
   statusHistory: many(orderStatusHistory),
-  courierConsignment: one(courierConsignments, { fields: [orders.id], references: [courierConsignments.orderId] }),
+  courierConsignment: one(courierConsignments),
 }));
 
 export const orderItemsRelations = relations(orderItems, ({ one }) => ({
   order: one(orders, { fields: [orderItems.orderId], references: [orders.id] }),
   variant: one(productVariants, { fields: [orderItems.variantId], references: [productVariants.id] }),
+}));
+
+export const orderPaymentsRelations = relations(orderPayments, ({ one }) => ({
+  order: one(orders, { fields: [orderPayments.orderId], references: [orders.id] }),
+}));
+
+export const orderStatusHistoryRelations = relations(orderStatusHistory, ({ one }) => ({
+  order: one(orders, { fields: [orderStatusHistory.orderId], references: [orders.id] }),
+  changedByUser: one(users, { fields: [orderStatusHistory.changedByUserId], references: [users.id] }),
+}));
+
+export const courierConsignmentsRelations = relations(courierConsignments, ({ one }) => ({
+  order: one(orders, { fields: [courierConsignments.orderId], references: [orders.id] }),
+}));
+
+export const inventoryLedgerRelations = relations(inventoryLedger, ({ one }) => ({
+  variant: one(productVariants, { fields: [inventoryLedger.variantId], references: [productVariants.id] }),
+  outlet: one(outlets, { fields: [inventoryLedger.outletId], references: [outlets.id] }),
+  user: one(users, { fields: [inventoryLedger.createdByUserId], references: [users.id] }),
+}));
+
+export const customersRelations = relations(customers, ({ many }) => ({
+  orders: many(orders),
+  addresses: many(customerAddresses),
+}));
+
+export const customerAddressesRelations = relations(customerAddresses, ({ one }) => ({
+  customer: one(customers, { fields: [customerAddresses.customerId], references: [customers.id] }),
 }));
 
 export const posRegisterShiftsRelations = relations(posRegisterShifts, ({ one, many }) => ({
@@ -74,3 +102,4 @@ export const posRegisterShiftsRelations = relations(posRegisterShifts, ({ one, m
   drawerEvents: many(cashDrawerEvents),
   orders: many(orders),
 }));
+

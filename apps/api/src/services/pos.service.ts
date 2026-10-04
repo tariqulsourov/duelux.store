@@ -342,16 +342,13 @@ export class PosService {
 
         const baseTotal = unitPrice.times(qty).minus(lineDiscount);
 
-        let lineTax = new Decimal(0);
-        if (!variantData.product.isTaxExempt && Number(variantData.product.taxRatePercent) > 0) {
-          lineTax = MoneyUtil.calculateTax(baseTotal, variantData.product.taxRatePercent);
-        }
-
-        const lineFinal = baseTotal.plus(lineTax);
+        // Tax skipped per item/sale as configured (calculated on aggregate totals)
+        const lineTax = new Decimal(0);
+        const lineFinal = baseTotal;
 
         subtotal = subtotal.plus(unitPrice.times(qty));
         discountTotal = discountTotal.plus(lineDiscount);
-        taxTotal = taxTotal.plus(lineTax);
+        taxTotal = new Decimal(0);
 
         preparedLines.push({
           variantId: variantData.variant.id,

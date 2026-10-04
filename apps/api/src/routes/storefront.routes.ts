@@ -172,13 +172,12 @@ storefrontRouter.post('/checkout/order', async (req: Request, res: Response) => 
         const unitPrice = new Decimal(variantData.variant.sellingPrice);
         const lineBase = unitPrice.times(qty);
 
-        let lineTax = new Decimal(0);
-        if (!variantData.product.isTaxExempt && Number(variantData.product.taxRatePercent) > 0) {
-          lineTax = MoneyUtil.calculateTax(lineBase, variantData.product.taxRatePercent);
-        }
+        // Tax skipped per item/sale as configured
+        const lineTax = new Decimal(0);
+        const lineFinal = lineBase;
 
         subtotal = subtotal.plus(lineBase);
-        taxTotal = taxTotal.plus(lineTax);
+        taxTotal = new Decimal(0);
 
         preparedLines.push({
           variantId: variantData.variant.id,
@@ -188,7 +187,7 @@ storefrontRouter.post('/checkout/order', async (req: Request, res: Response) => 
           quantity: qty,
           unitPrice,
           taxAmount: lineTax,
-          totalPrice: lineBase.plus(lineTax),
+          totalPrice: lineFinal,
         });
 
         // 3. Atomically Lock and Deduct Inventory in MySQL

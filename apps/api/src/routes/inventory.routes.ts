@@ -1,10 +1,34 @@
 import { Router, Request, Response } from 'express';
-import { db, inventoryLevels, inventoryLedger, productVariants, products } from '@duelux/db';
+import { db, inventoryLevels, inventoryLedger, productVariants, products, outlets } from '@duelux/db';
 import { eq, and, desc } from 'drizzle-orm';
 import { InventoryLedgerService } from '../services/inventory-ledger.service.js';
 import { InventoryEventType } from '@duelux/shared';
 
 export const inventoryRouter = Router();
+
+/**
+ * List All Inventory Levels across Outlets
+ * GET /api/v1/inventory/levels
+ */
+inventoryRouter.get('/levels', async (req: Request, res: Response) => {
+  try {
+    const levels = await db
+      .select({
+        level: inventoryLevels,
+        variant: productVariants,
+        product: products,
+        outlet: outlets,
+      })
+      .from(inventoryLevels)
+      .innerJoin(productVariants, eq(inventoryLevels.variantId, productVariants.id))
+      .innerJoin(products, eq(productVariants.productId, products.id))
+      .innerJoin(outlets, eq(inventoryLevels.outletId, outlets.id));
+
+    res.json({ success: true, data: levels });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
 
 /**
  * List Inventory Levels for an Outlet
@@ -19,10 +43,12 @@ inventoryRouter.get('/levels/:outletId', async (req: Request, res: Response) => 
         level: inventoryLevels,
         variant: productVariants,
         product: products,
+        outlet: outlets,
       })
       .from(inventoryLevels)
       .innerJoin(productVariants, eq(inventoryLevels.variantId, productVariants.id))
       .innerJoin(products, eq(productVariants.productId, products.id))
+      .innerJoin(outlets, eq(inventoryLevels.outletId, outlets.id))
       .where(eq(inventoryLevels.outletId, outletId));
 
     res.json({ success: true, data: levels });

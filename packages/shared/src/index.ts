@@ -1,3 +1,4 @@
-export * from './enums.js';
-export * from './money.js';
-export * from './barcode.js';
+export * from './enums';
+export * from './money';
+export * from './barcode';
+

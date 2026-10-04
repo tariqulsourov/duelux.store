@@ -216,6 +216,116 @@ export default function AdminProductsPage() {
   const shortDescRef = useRef<HTMLTextAreaElement>(null);
   const detailedDescRef = useRef<HTMLTextAreaElement>(null);
 
+  // Quick Category & Brand Modals
+  const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
+  const [newCatName, setNewCatName] = useState('');
+  const [newCatSlug, setNewCatSlug] = useState('');
+  const [newCatDesc, setNewCatDesc] = useState('');
+  const [newCatImg, setNewCatImg] = useState('');
+  const [creatingCategory, setCreatingCategory] = useState(false);
+  const [catError, setCatError] = useState('');
+
+  const [showAddBrandModal, setShowAddBrandModal] = useState(false);
+  const [newBrandName, setNewBrandName] = useState('');
+  const [newBrandSlug, setNewBrandSlug] = useState('');
+  const [newBrandLogo, setNewBrandLogo] = useState('');
+  const [creatingBrand, setCreatingBrand] = useState(false);
+  const [brandError, setBrandError] = useState('');
+
+  const handleCatNameChange = (val: string) => {
+    setNewCatName(val);
+    setNewCatSlug(val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''));
+  };
+
+  const handleCreateCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCatName.trim()) {
+      setCatError('Category name is required');
+      return;
+    }
+    try {
+      setCreatingCategory(true);
+      setCatError('');
+      const res = await fetch('http://localhost:4000/api/v1/catalog/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newCatName.trim(),
+          slug: newCatSlug.trim() || undefined,
+          description: newCatDesc.trim() || undefined,
+          imageUrl: newCatImg.trim() || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Failed to create category');
+      }
+
+      setCategories((prev) => [...prev, data.data]);
+      setCategoryId(data.data.id);
+      setNewCatName('');
+      setNewCatSlug('');
+      setNewCatDesc('');
+      setNewCatImg('');
+      setShowAddCategoryModal(false);
+      setNotification({
+        type: 'success',
+        message: `Category "${data.data.name}" created and selected!`,
+      });
+      setTimeout(() => setNotification(null), 4000);
+    } catch (err: any) {
+      setCatError(err.message || 'Error creating category');
+    } finally {
+      setCreatingCategory(false);
+    }
+  };
+
+  const handleBrandNameChange = (val: string) => {
+    setNewBrandName(val);
+    setNewBrandSlug(val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''));
+  };
+
+  const handleCreateBrand = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newBrandName.trim()) {
+      setBrandError('Brand name is required');
+      return;
+    }
+    try {
+      setCreatingBrand(true);
+      setBrandError('');
+      const res = await fetch('http://localhost:4000/api/v1/catalog/brands', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newBrandName.trim(),
+          slug: newBrandSlug.trim() || undefined,
+          logoUrl: newBrandLogo.trim() || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Failed to create brand');
+      }
+
+      setBrands((prev) => [...prev, data.data]);
+      setBrandId(data.data.id);
+      setNewBrandName('');
+      setNewBrandSlug('');
+      setNewBrandLogo('');
+      setShowAddBrandModal(false);
+      setNotification({
+        type: 'success',
+        message: `Brand "${data.data.name}" created and selected!`,
+      });
+      setTimeout(() => setNotification(null), 4000);
+    } catch (err: any) {
+      setBrandError(err.message || 'Error creating brand');
+    } finally {
+      setCreatingBrand(false);
+    }
+  };
+
   const loadData = async () => {
     try {
       setLoading(true);
@@ -948,9 +1058,22 @@ export default function AdminProductsPage() {
 
                     {/* Category */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                        {t('category_field')}
-                      </label>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                          {t('category_field')}
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCatError('');
+                            setShowAddCategoryModal(true);
+                          }}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/50 hover:bg-brand-100 dark:hover:bg-brand-900/60 border border-brand-200 dark:border-brand-800 transition"
+                        >
+                          <Plus className="w-3 h-3" />
+                          {t('add_category')}
+                        </button>
+                      </div>
                       <select
                         value={categoryId}
                         onChange={(e) => setCategoryId(e.target.value)}
@@ -966,9 +1089,22 @@ export default function AdminProductsPage() {
 
                     {/* Brand */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                        {t('brand_field')}
-                      </label>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                          {t('brand_field')}
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setBrandError('');
+                            setShowAddBrandModal(true);
+                          }}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/50 hover:bg-brand-100 dark:hover:bg-brand-900/60 border border-brand-200 dark:border-brand-800 transition"
+                        >
+                          <Plus className="w-3 h-3" />
+                          {t('add_brand')}
+                        </button>
+                      </div>
                       <select
                         value={brandId}
                         onChange={(e) => setBrandId(e.target.value)}
@@ -1684,6 +1820,225 @@ export default function AdminProductsPage() {
                     )}
                   </button>
                 </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Quick "Add New Category" Modal */}
+      {showAddCategoryModal && (
+        <div className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden p-6 transition-colors">
+            <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100 dark:border-slate-800">
+              <div>
+                <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+                  <PlusCircle className="w-5 h-5 text-brand-600 dark:text-brand-400" />
+                  {t('create_category_title')}
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Save to catalog & immediately select for this product
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddCategoryModal(false)}
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {catError && (
+              <div className="mb-4 p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 rounded-xl text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{catError}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleCreateCategory} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  {t('category_name_field')} <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  autoFocus
+                  placeholder="e.g. Polo Shirts, Festive Panjabi"
+                  value={newCatName}
+                  onChange={(e) => handleCatNameChange(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  {t('slug_field')}
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. polo-shirts"
+                  value={newCatSlug}
+                  onChange={(e) => setNewCatSlug(e.target.value)}
+                  className="w-full px-3 py-2 font-mono bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  {t('category_desc_field')}
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder="Short summary for category browsing..."
+                  value={newCatDesc}
+                  onChange={(e) => setNewCatDesc(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 resize-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  {t('category_image_field')}
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://images.unsplash.com/..."
+                  value={newCatImg}
+                  onChange={(e) => setNewCatImg(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 font-mono text-[11px]"
+                />
+              </div>
+
+              <div className="pt-2 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setShowAddCategoryModal(false)}
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold transition"
+                >
+                  {t('cancel')}
+                </button>
+                <button
+                  type="submit"
+                  disabled={creatingCategory}
+                  className="flex items-center gap-2 px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold shadow-md shadow-brand-600/30 transition disabled:opacity-50"
+                >
+                  {creatingCategory ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>{t('loading')}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>{t('save_category_btn')}</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Quick "Add New Brand" Modal */}
+      {showAddBrandModal && (
+        <div className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden p-6 transition-colors">
+            <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100 dark:border-slate-800">
+              <div>
+                <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+                  <PlusCircle className="w-5 h-5 text-brand-600 dark:text-brand-400" />
+                  {t('create_brand_title')}
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Save to brand registry & immediately select for this product
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddBrandModal(false)}
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {brandError && (
+              <div className="mb-4 p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 rounded-xl text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{brandError}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleCreateBrand} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  {t('brand_name_field')} <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  autoFocus
+                  placeholder="e.g. Duelux Casuals, Atelier Bengal"
+                  value={newBrandName}
+                  onChange={(e) => handleBrandNameChange(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  {t('slug_field')}
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. duelux-casuals"
+                  value={newBrandSlug}
+                  onChange={(e) => setNewBrandSlug(e.target.value)}
+                  className="w-full px-3 py-2 font-mono bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  {t('brand_logo_field')}
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://... logo.png"
+                  value={newBrandLogo}
+                  onChange={(e) => setNewBrandLogo(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-brand-500 font-mono text-[11px]"
+                />
+              </div>
+
+              <div className="pt-2 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setShowAddBrandModal(false)}
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold transition"
+                >
+                  {t('cancel')}
+                </button>
+                <button
+                  type="submit"
+                  disabled={creatingBrand}
+                  className="flex items-center gap-2 px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold shadow-md shadow-brand-600/30 transition disabled:opacity-50"
+                >
+                  {creatingBrand ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>{t('loading')}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>{t('save_brand_btn')}</span>
+                    </>
+                  )}
+                </button>
               </div>
             </form>
           </div>

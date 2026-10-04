@@ -24,13 +24,28 @@ catalogRouter.get('/categories', async (req: Request, res: Response) => {
  */
 catalogRouter.post('/categories', async (req: Request, res: Response) => {
   try {
-    const { name, slug, description } = req.body;
-    const finalSlug = slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const { name, slug, description, imageUrl } = req.body;
+    if (!name || typeof name !== 'string' || !name.trim()) {
+      return res.status(400).json({ success: false, message: 'Category name is required' });
+    }
+
+    const trimmedName = name.trim();
+    let generatedSlug = (slug || trimmedName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')).trim();
+    if (!generatedSlug) {
+      generatedSlug = `cat-${Date.now().toString(36)}`;
+    }
+
+    // Ensure slug uniqueness
+    const [existing] = await db.select().from(categories).where(eq(categories.slug, generatedSlug));
+    const finalSlug = existing ? `${generatedSlug}-${Math.floor(Math.random() * 1000)}` : generatedSlug;
+
     await db.insert(categories).values({
-      name,
+      name: trimmedName,
       slug: finalSlug,
-      description,
+      description: description?.trim() || null,
+      imageUrl: imageUrl?.trim() || null,
     });
+
     const [created] = await db.select().from(categories).where(eq(categories.slug, finalSlug));
     res.status(201).json({ success: true, data: created });
   } catch (error: any) {
@@ -57,12 +72,27 @@ catalogRouter.get('/brands', async (req: Request, res: Response) => {
  */
 catalogRouter.post('/brands', async (req: Request, res: Response) => {
   try {
-    const { name, slug } = req.body;
-    const finalSlug = slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const { name, slug, logoUrl } = req.body;
+    if (!name || typeof name !== 'string' || !name.trim()) {
+      return res.status(400).json({ success: false, message: 'Brand name is required' });
+    }
+
+    const trimmedName = name.trim();
+    let generatedSlug = (slug || trimmedName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')).trim();
+    if (!generatedSlug) {
+      generatedSlug = `brand-${Date.now().toString(36)}`;
+    }
+
+    // Ensure slug uniqueness
+    const [existing] = await db.select().from(brands).where(eq(brands.slug, generatedSlug));
+    const finalSlug = existing ? `${generatedSlug}-${Math.floor(Math.random() * 1000)}` : generatedSlug;
+
     await db.insert(brands).values({
-      name,
+      name: trimmedName,
       slug: finalSlug,
+      logoUrl: logoUrl?.trim() || null,
     });
+
     const [created] = await db.select().from(brands).where(eq(brands.slug, finalSlug));
     res.status(201).json({ success: true, data: created });
   } catch (error: any) {

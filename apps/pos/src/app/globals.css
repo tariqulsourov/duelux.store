@@ -17,6 +17,11 @@
   }
 }
 
+.font-bengali {
+  font-family: var(--font-hind-siliguri), 'Noto Sans Bengali', sans-serif;
+}
+
+
 /* Thermal Receipt & Label Print Media Styles */
 @media print {
   body * {

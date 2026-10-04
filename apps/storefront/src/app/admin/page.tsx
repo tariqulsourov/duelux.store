@@ -17,6 +17,8 @@ import {
   RefreshCw,
 } from 'lucide-react';
 
+import { useLanguage } from '../../context/LanguageContext';
+
 interface AdminStats {
   totalRevenue: string;
   totalOrdersCount: number;
@@ -52,6 +54,7 @@ export default function AdminDashboardPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const { t } = useLanguage();
 
   const fetchData = async () => {
     try {
@@ -89,13 +92,13 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
       {/* Top Banner / Welcome */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 p-6 rounded-2xl border border-slate-800 shadow-xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 rounded-2xl border border-slate-700/60 shadow-xl">
         <div>
           <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
-            Omnichannel Dashboard Overview
+            {t('admin_overview')}
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Real-time synchronization between Physical Outlets, Central Warehouse, and Online Store.
+          <p className="text-xs text-slate-300 mt-1">
+            {t('omnichannel_notice')}
           </p>
         </div>
 
@@ -103,10 +106,10 @@ export default function AdminDashboardPage() {
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
-            <span>Refresh Data</span>
+            <span>{t('refresh')}</span>
           </button>
 
           <Link
@@ -114,7 +117,7 @@ export default function AdminDashboardPage() {
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold shadow-md shadow-brand-600/30 transition"
           >
             <PlusCircle className="w-3.5 h-3.5" />
-            <span>Create New Product</span>
+            <span>{t('create_product')}</span>
           </Link>
         </div>
       </div>
@@ -122,97 +125,98 @@ export default function AdminDashboardPage() {
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Total Revenue */}
-        <div className="bg-slate-950/70 p-5 rounded-2xl border border-slate-800/80 shadow-lg relative overflow-hidden group hover:border-slate-700 transition">
+        <div className="bg-white dark:bg-slate-950/70 p-5 rounded-2xl border border-slate-200 dark:border-slate-800/80 shadow-sm dark:shadow-lg relative overflow-hidden group hover:border-slate-300 dark:hover:border-slate-700 transition">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-              Total Gross Sales
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              {t('gross_sales')}
             </span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
               <TrendingUp className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-white mt-3">
+          <div className="text-2xl font-black text-slate-900 dark:text-white mt-3">
             ৳{stats ? Number(stats.totalRevenue).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '0.00'}
           </div>
-          <div className="text-xs text-slate-400 mt-2 flex items-center gap-1.5">
-            <span className="text-emerald-400 font-semibold">{stats?.totalOrdersCount || 0}</span>
-            <span>total fulfilled orders</span>
+          <div className="text-xs text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-1.5">
+            <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{stats?.totalOrdersCount || 0}</span>
+            <span>{t('items')}</span>
           </div>
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
         </div>
 
         {/* POS In-Store Sales */}
-        <div className="bg-slate-950/70 p-5 rounded-2xl border border-slate-800/80 shadow-lg relative overflow-hidden group hover:border-slate-700 transition">
+        <div className="bg-white dark:bg-slate-950/70 p-5 rounded-2xl border border-slate-200 dark:border-slate-800/80 shadow-sm dark:shadow-lg relative overflow-hidden group hover:border-slate-300 dark:hover:border-slate-700 transition">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-              In-Store POS Orders
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              {t('pos_orders_stat')}
             </span>
-            <div className="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center">
               <Store className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-white mt-3">
+          <div className="text-2xl font-black text-slate-900 dark:text-white mt-3">
             {stats?.posOrdersCount || 0}
           </div>
-          <div className="text-xs text-slate-400 mt-2 flex items-center justify-between">
+          <div className="text-xs text-slate-500 dark:text-slate-400 mt-2 flex items-center justify-between">
             <span>Dhanmondi Flagship</span>
             <a
               href="http://localhost:3001"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-brand-400 hover:text-brand-300 font-semibold inline-flex items-center gap-1"
+              className="text-brand-600 dark:text-brand-400 hover:underline font-semibold inline-flex items-center gap-1"
             >
-              Open POS <ArrowRight className="w-3 h-3" />
+              POS <ArrowRight className="w-3 h-3" />
             </a>
           </div>
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-500 to-indigo-500"></div>
         </div>
 
         {/* Online Web Orders */}
-        <div className="bg-slate-950/70 p-5 rounded-2xl border border-slate-800/80 shadow-lg relative overflow-hidden group hover:border-slate-700 transition">
+        <div className="bg-white dark:bg-slate-950/70 p-5 rounded-2xl border border-slate-200 dark:border-slate-800/80 shadow-sm dark:shadow-lg relative overflow-hidden group hover:border-slate-300 dark:hover:border-slate-700 transition">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-              Online Web Orders
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              {t('web_orders_stat')}
             </span>
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
               <Globe className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-white mt-3">
+          <div className="text-2xl font-black text-slate-900 dark:text-white mt-3">
             {stats?.webOrdersCount || 0}
           </div>
-          <div className="text-xs text-slate-400 mt-2 flex items-center justify-between">
-            <span>Digital Storefront</span>
-            <Link href="/" target="_blank" className="text-amber-400 hover:text-amber-300 font-semibold inline-flex items-center gap-1">
-              Visit Store <ArrowRight className="w-3 h-3" />
+          <div className="text-xs text-slate-500 dark:text-slate-400 mt-2 flex items-center justify-between">
+            <span>{t('store_title')}</span>
+            <Link href="/" target="_blank" className="text-amber-600 dark:text-amber-400 hover:underline font-semibold inline-flex items-center gap-1">
+              Store <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-400"></div>
         </div>
 
         {/* Low Stock Alerts */}
-        <div className="bg-slate-950/70 p-5 rounded-2xl border border-slate-800/80 shadow-lg relative overflow-hidden group hover:border-slate-700 transition">
+        <div className="bg-white dark:bg-slate-950/70 p-5 rounded-2xl border border-slate-200 dark:border-slate-800/80 shadow-sm dark:shadow-lg relative overflow-hidden group hover:border-slate-300 dark:hover:border-slate-700 transition">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-              Inventory Attention
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              {t('low_stock_alerts')}
             </span>
-            <div className="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center">
               <AlertTriangle className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-white mt-3 flex items-center gap-2">
+          <div className="text-2xl font-black text-slate-900 dark:text-white mt-3 flex items-center gap-2">
             <span>{stats?.lowStockCount || 0}</span>
-            <span className="text-xs text-slate-400 font-normal">items low stock</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-normal">{t('low_stock')}</span>
           </div>
-          <div className="text-xs text-slate-400 mt-2 flex items-center justify-between">
-            <span>{stats?.totalSkusCount || 0} Total Active SKUs</span>
-            <Link href="/admin/inventory" className="text-rose-400 hover:text-rose-300 font-semibold inline-flex items-center gap-1">
-              Manage <ArrowRight className="w-3 h-3" />
+          <div className="text-xs text-slate-500 dark:text-slate-400 mt-2 flex items-center justify-between">
+            <span>{stats?.totalSkusCount || 0} {t('active_skus')}</span>
+            <Link href="/admin/inventory" className="text-rose-600 dark:text-rose-400 hover:underline font-semibold inline-flex items-center gap-1">
+              {t('actions')} <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-rose-500 to-red-400"></div>
         </div>
       </div>
+
 
       {/* Quick Operations Strip */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

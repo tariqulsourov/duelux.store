@@ -44,3 +44,7 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# Uploads
+apps/api/public/uploads/*
+!apps/api/public/uploads/.gitkeep

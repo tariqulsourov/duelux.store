@@ -13,6 +13,7 @@ import {
   ExternalLink,
   PlusCircle,
   Sparkles,
+  LayoutTemplate,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { ThemeToggle } from '../../components/ThemeToggle';
@@ -37,6 +38,11 @@ export default function AdminLayout({
       href: '/admin',
       icon: LayoutDashboard,
       exact: true,
+    },
+    {
+      name: language === 'bn' ? 'হোমপেজ ও মেনু বিল্ডার' : 'Homepage & Menu Builder',
+      href: '/admin/layouts',
+      icon: LayoutTemplate,
     },
     {
       name: t('admin_products'),

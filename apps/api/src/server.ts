@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import path from 'path';
 import * as dotenv from 'dotenv';
 import { pool } from '@duelux/db';
 import { posRouter } from './routes/pos.routes.js';
@@ -9,6 +10,7 @@ import { catalogRouter } from './routes/catalog.routes.js';
 import { outletsRouter } from './routes/outlets.routes.js';
 import { storefrontRouter } from './routes/storefront.routes.js';
 import { adminRouter } from './routes/admin.routes.js';
+import { cmsRouter } from './routes/cms.routes.js';
 
 dotenv.config({ path: '../../.env' });
 dotenv.config();
@@ -17,7 +19,11 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 // Security and utility middleware
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  })
+);
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : '*',
@@ -25,6 +31,9 @@ app.use(
   })
 );
 app.use(express.json());
+
+// Serve static uploaded files (CMS images, banners, icons)
+app.use('/uploads', express.static(path.join(process.cwd(), 'public', 'uploads')));
 
 // Health Check
 app.get('/health', async (req, res) => {
@@ -53,6 +62,7 @@ app.use('/api/v1/catalog', catalogRouter);
 app.use('/api/v1/outlets', outletsRouter);
 app.use('/api/v1/storefront', storefrontRouter);
 app.use('/api/v1/admin', adminRouter);
+app.use('/api/v1/cms', cmsRouter);
 
 // Global Error Handler
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

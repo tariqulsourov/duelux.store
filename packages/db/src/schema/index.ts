@@ -19,6 +19,7 @@ export * from './pos';
 export * from './orders';
 export * from './couriers';
 export * from './audit';
+export * from './cms';
 
 // Relations Definitions
 export const outletsRelations = relations(outlets, ({ many }) => ({

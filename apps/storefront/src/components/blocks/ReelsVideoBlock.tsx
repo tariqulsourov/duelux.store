@@ -15,6 +15,8 @@ interface ReelsVideoBlockProps {
   settings: {
     title?: string;
     subtitle?: string;
+    badgeText?: string;
+    ctaText?: string;
     reels?: ReelItem[];
   };
 }
@@ -23,6 +25,8 @@ export function ReelsVideoBlock({ settings }: ReelsVideoBlockProps) {
   const {
     title = 'WATCH BEFORE YOU BUY',
     subtitle = 'Real video previews of fabric drape, texture, and master tailoring',
+    badgeText = 'Atelier Video Reels',
+    ctaText = 'Tap to watch & shop →',
     reels,
   } = settings || {};
 
@@ -54,7 +58,7 @@ export function ReelsVideoBlock({ settings }: ReelsVideoBlockProps) {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <span className="text-[11px] font-black uppercase tracking-widest text-amber-400">
-            Atelier Video Reels
+            {badgeText}
           </span>
           <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-1">
             {title}
@@ -109,7 +113,7 @@ export function ReelsVideoBlock({ settings }: ReelsVideoBlockProps) {
                   {reel.title}
                 </h4>
                 <span className="text-[11px] font-bold text-amber-400/90 mt-1 inline-block">
-                  Tap to watch & shop →
+                  {ctaText}
                 </span>
               </div>
             </Link>

@@ -8,7 +8,10 @@ interface TallBannerRowBlockProps {
   settings: {
     categoryName?: string;
     categoryDescription?: string;
+    badgeText?: string;
+    exploreAllText?: string;
     tallPoster?: {
+      badgeText?: string;
       title?: string;
       subtitle?: string;
       buttonText?: string;
@@ -25,16 +28,20 @@ export function TallBannerRowBlock({ settings, products = [] }: TallBannerRowBlo
   const {
     categoryName = 'ROYAL SILK COLLECTION',
     categoryDescription = 'Master-crafted garments paired with bespoke accessories',
+    badgeText = 'Signature Collection',
+    exploreAllText = 'Explore All',
     tallPoster,
     queryFilter,
     itemLimit = 4,
   } = settings || {};
 
-  const poster = tallPoster || {
-    title: 'SWEET SILK',
-    subtitle: 'Starting from ৳3,850',
-    buttonText: 'View All Silk',
-    link: '#products',
+  const poster = {
+    title: tallPoster?.title || 'SWEET SILK',
+    subtitle: tallPoster?.subtitle || 'Starting from ৳3,850',
+    buttonText: tallPoster?.buttonText || 'View All Silk',
+    link: tallPoster?.link || '#products',
+    imageUrl: tallPoster?.imageUrl,
+    badgeText: tallPoster?.badgeText || 'Featured Edit',
   };
 
   // Filter products for this row
@@ -56,7 +63,7 @@ export function TallBannerRowBlock({ settings, products = [] }: TallBannerRowBlo
         <div className="mb-8 pb-4 border-b border-gray-200 flex items-center justify-between">
           <div>
             <span className="text-[11px] font-black uppercase tracking-widest text-amber-700">
-              Signature Collection
+              {badgeText}
             </span>
             <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
               {categoryName}
@@ -69,7 +76,7 @@ export function TallBannerRowBlock({ settings, products = [] }: TallBannerRowBlo
             href={poster.link || '#products'}
             className="hidden sm:inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-luxury-900 hover:text-amber-600 transition"
           >
-            <span>Explore All</span>
+            <span>{exploreAllText}</span>
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -92,7 +99,7 @@ export function TallBannerRowBlock({ settings, products = [] }: TallBannerRowBlo
             <div className="relative z-10">
               <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/20 border border-amber-500/40 px-3 py-1 text-[11px] font-bold text-amber-300 mb-3 backdrop-blur-md">
                 <Sparkles className="h-3 w-3 text-amber-400" />
-                <span>Featured Edit</span>
+                <span>{poster.badgeText}</span>
               </div>
               <h3 className="text-3xl font-black text-white tracking-tight">
                 {poster.title}

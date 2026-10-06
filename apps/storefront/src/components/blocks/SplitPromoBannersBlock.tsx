@@ -8,6 +8,8 @@ interface SplitBannerItem {
   subtitle?: string;
   link: string;
   imageUrl?: string | null;
+  badgeText?: string;
+  buttonText?: string;
 }
 
 interface SplitPromoBannersBlockProps {
@@ -62,7 +64,7 @@ export function SplitPromoBannersBlock({ settings }: SplitPromoBannersBlockProps
 
               <div className="relative z-10">
                 <span className="text-[10px] font-black tracking-widest text-amber-400 uppercase">
-                  Curated Ensemble
+                  {banner.badgeText || 'Curated Ensemble'}
                 </span>
                 <h3 className="text-2xl font-black text-white tracking-tight mt-1 group-hover:text-amber-300 transition">
                   {banner.title}
@@ -73,7 +75,7 @@ export function SplitPromoBannersBlock({ settings }: SplitPromoBannersBlockProps
                   </p>
                 )}
                 <div className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-white group-hover:text-amber-400 transition">
-                  <span>Explore Showcase</span>
+                  <span>{banner.buttonText || 'Explore Showcase'}</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </div>
               </div>

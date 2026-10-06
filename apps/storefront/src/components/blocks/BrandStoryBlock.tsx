@@ -4,6 +4,7 @@ import { PlaceholderImage } from './PlaceholderImage';
 
 interface BrandStoryBlockProps {
   settings: {
+    badgeText?: string;
     headline?: string;
     paragraph?: string;
     imageSide?: 'left' | 'right';
@@ -16,6 +17,7 @@ export function BrandStoryBlock({ settings }: BrandStoryBlockProps) {
   const {
     headline = 'BEST LUXURY ATELIER IN DHAKA',
     paragraph = 'Discover timeless tailoring where ancient Bengal handloom traditions unite with contemporary bespoke silhouettes. Every garment is cut from pure natural fibers with heirloom-grade longevity.',
+    badgeText = 'Heritage & Artistry',
     imageSide = 'right',
     imageUrl,
     stats = [
@@ -39,7 +41,7 @@ export function BrandStoryBlock({ settings }: BrandStoryBlockProps) {
           >
             <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/40 bg-amber-500/10 px-4 py-1.5 text-xs font-bold text-amber-300">
               <Sparkles className="h-4 w-4 text-amber-400" />
-              <span>Heritage & Artistry</span>
+              <span>{badgeText}</span>
             </div>
 
             <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">

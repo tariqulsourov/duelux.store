@@ -27,6 +27,9 @@ interface CategoryBentoBlockProps {
     style?: 'pedestals' | 'bento_4' | 'circle_strip';
     title?: string;
     subtitle?: string;
+    badgeText?: string;
+    exploreText?: string;
+    shopNowText?: string;
     pillars?: PedestalItem[];
     tiles?: BentoTileItem[];
     categories?: CircleCategoryItem[];
@@ -38,6 +41,9 @@ export function CategoryBentoBlock({ settings }: CategoryBentoBlockProps) {
     style = 'pedestals',
     title = 'CURATED COLLECTION PILLARS',
     subtitle = 'Choose your signature aesthetic crafted by master weavers',
+    badgeText,
+    exploreText = 'Explore Pillar',
+    shopNowText = 'Shop Now',
     pillars,
     tiles,
     categories,
@@ -57,7 +63,7 @@ export function CategoryBentoBlock({ settings }: CategoryBentoBlockProps) {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <span className="text-xs font-black tracking-widest uppercase text-amber-400">
-              The Sovereign Pillars
+              {badgeText || 'The Sovereign Pillars'}
             </span>
             <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-white mt-1">
               {title}
@@ -99,7 +105,7 @@ export function CategoryBentoBlock({ settings }: CategoryBentoBlockProps) {
                     </p>
                   )}
                   <div className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-amber-400 group-hover:translate-x-1 transition">
-                    <span>Explore Pillar</span>
+                    <span>{exploreText}</span>
                     <ArrowRight className="h-3.5 w-3.5" />
                   </div>
                 </div>
@@ -127,7 +133,7 @@ export function CategoryBentoBlock({ settings }: CategoryBentoBlockProps) {
           <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-200">
             <div>
               <span className="text-xs font-black tracking-widest text-emerald-700 uppercase">
-                Categories
+                {badgeText || 'Categories'}
               </span>
               <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
                 {title}
@@ -158,7 +164,7 @@ export function CategoryBentoBlock({ settings }: CategoryBentoBlockProps) {
                     {tile.title}
                   </h3>
                   <span className="inline-flex items-center gap-1 text-[11px] font-bold text-gray-300 mt-1">
-                    Shop Now <ArrowRight className="h-3 w-3" />
+                    {shopNowText} <ArrowRight className="h-3 w-3" />
                   </span>
                 </div>
               </Link>

@@ -7,6 +7,8 @@ interface ProductRailBlockProps {
   settings: {
     sectionTitle?: string;
     sectionSubtitle?: string;
+    badgeText?: string;
+    viewAllText?: string;
     queryFilter?: 'ALL' | 'FEATURED' | string;
     columns?: number;
     itemLimit?: number;
@@ -19,6 +21,8 @@ export function ProductRailBlock({ settings, products = [] }: ProductRailBlockPr
   const {
     sectionTitle = 'FEATURED MASTERPIECES',
     sectionSubtitle = 'Bespoke apparel handcrafted by master tailors in Bangladesh',
+    badgeText = 'Exclusive Collection',
+    viewAllText = 'View Full Showcase',
     queryFilter = 'ALL',
     columns = 4,
     itemLimit = 8,
@@ -58,7 +62,7 @@ export function ProductRailBlock({ settings, products = [] }: ProductRailBlockPr
             <div className="flex items-center gap-2 mb-1.5">
               <span className="h-2 w-2 rounded-full bg-amber-500 animate-ping" />
               <span className="text-[11px] font-black uppercase tracking-widest text-amber-700">
-                Exclusive Collection
+                {badgeText}
               </span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">
@@ -74,7 +78,7 @@ export function ProductRailBlock({ settings, products = [] }: ProductRailBlockPr
               href={viewAllLink}
               className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-luxury-900 hover:text-amber-600 transition group shrink-0"
             >
-              <span>View Full Showcase</span>
+              <span>{viewAllText}</span>
               <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition" />
             </Link>
           )}

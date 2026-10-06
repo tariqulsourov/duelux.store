@@ -13,6 +13,7 @@ interface TestimonialsBlockProps {
     title?: string;
     subtitle?: string;
     ratingScore?: string;
+    ratingBadgeText?: string;
     reviews?: ReviewItem[];
   };
 }
@@ -22,6 +23,7 @@ export function TestimonialsBlock({ settings }: TestimonialsBlockProps) {
     title = "LET'S SEE WHAT PATRONS TALK ABOUT US",
     subtitle = 'Over 1,200+ Verified 5-Star Reviews across Bangladesh',
     ratingScore = '5.00',
+    ratingBadgeText = 'Rated Patron Satisfaction',
     reviews,
   } = settings || {};
 
@@ -62,7 +64,9 @@ export function TestimonialsBlock({ settings }: TestimonialsBlockProps) {
                 <Star key={i} className="h-3.5 w-3.5 fill-current" />
               ))}
             </div>
-            <span>{ratingScore} Rated Patron Satisfaction</span>
+            <span>
+              {ratingScore} {ratingBadgeText}
+            </span>
           </div>
 
           <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight leading-snug">

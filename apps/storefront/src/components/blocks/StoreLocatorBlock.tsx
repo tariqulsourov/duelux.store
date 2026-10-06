@@ -4,22 +4,26 @@ import { PlaceholderImage } from './PlaceholderImage';
 
 interface StoreLocatorBlockProps {
   settings: {
+    badgeText?: string;
     title?: string;
     subtitle?: string;
     address?: string;
     hours?: string;
     phone?: string;
+    buttonText?: string;
     imageUrl?: string | null;
   };
 }
 
 export function StoreLocatorBlock({ settings }: StoreLocatorBlockProps) {
   const {
+    badgeText = 'Flagship Atelier',
     title = 'VISIT OUR FLAGSHIP BOUTIQUE',
     subtitle = 'Experience private styling, handloom swatches, and bespoke collar tailoring.',
     address = 'House 42, Road 11, Dhanmondi, Dhaka 1209',
     hours = 'Open Daily: 10:00 AM – 10:00 PM',
     phone = '+880 1700-000000',
+    buttonText = 'Get Google Maps Directions',
     imageUrl,
   } = settings || {};
 
@@ -30,7 +34,7 @@ export function StoreLocatorBlock({ settings }: StoreLocatorBlockProps) {
           {/* Info Card (col-span-6) */}
           <div className="lg:col-span-6 space-y-6">
             <span className="text-[11px] font-black uppercase tracking-widest text-amber-400">
-              Flagship Atelier
+              {badgeText}
             </span>
             <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
               {title}
@@ -85,7 +89,7 @@ export function StoreLocatorBlock({ settings }: StoreLocatorBlockProps) {
                 className="inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3.5 text-xs font-black uppercase tracking-wider text-black hover:bg-gray-100 transition shadow-lg"
               >
                 <Navigation className="h-4 w-4 text-luxury-900" />
-                <span>Get Google Maps Directions</span>
+                <span>{buttonText}</span>
               </a>
             </div>
           </div>
